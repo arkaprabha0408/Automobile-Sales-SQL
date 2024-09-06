@@ -33,3 +33,33 @@ GROUP BY
     END 
 ORDER BY  
     sales_year, sales_month, sales_week, brand_name, gender, income_range;
+
+
+
+
+SELECT b.brand_name, SUM(s.price) AS total_sales_amount
+FROM sales s
+JOIN brand b ON s.brand_id = b.brand_id
+WHERE s.sale_date >= TRUNC(SYSDATE, 'YYYY') - INTERVAL '1' YEAR -- Sales in the last year
+GROUP BY b.brand_name
+ORDER BY total_sales_amount DESC
+FETCH FIRST 2 ROWS ONLY;
+
+SELECT EXTRACT(MONTH FROM s.sale_date) AS sales_month,
+       COUNT(*) AS total_sales
+FROM sales s
+JOIN Model m ON s.model_name = m.model_name
+WHERE m.style = 'Convertible'
+GROUP BY EXTRACT(MONTH FROM s.sale_date)
+ORDER BY total_sales DESC;
+
+
+
+
+
+SELECT v.dealer_id, 
+       AVG(DATE_DIFF(SYSDATE, v.entry_date, 'DAY')) AS avg_days_in_inventory
+FROM vehicle v
+GROUP BY v.dealer_id
+ORDER BY avg_days_in_inventory DESC;
+
